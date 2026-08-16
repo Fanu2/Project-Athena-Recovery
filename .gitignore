@@ -5,3 +5,4 @@ __pycache__/
 venv/
 athena-manifest.json
 src/*.egg-info/
+recovery-inventory.json
