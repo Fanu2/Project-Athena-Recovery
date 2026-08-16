@@ -7,6 +7,8 @@ from __future__ import annotations
 import tarfile
 from pathlib import Path
 
+from .report import create_restore_report
+
 
 def _validate_archive(
     archive: tarfile.TarFile,
@@ -86,5 +88,19 @@ def restore_backup(
         archive.extractall(
             target
         )
+
+    report = create_restore_report(
+        destination=target,
+        archive=str(archive_file),
+        file_count=len(
+            list(
+                target.rglob("*")
+            )
+        ),
+        output=(
+            target
+            / "restore-report.json"
+        ),
+    )
 
     return target

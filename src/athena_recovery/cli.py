@@ -14,6 +14,7 @@ from .paths import find_athena_data, find_athena_source
 from .system import system_info
 from .validator import validate_backup
 from .restore import restore_backup
+from .inventory import create_inventory, save_inventory
 
 
 def info_command() -> None:
@@ -100,6 +101,32 @@ def restore_command(
     print(output)
 
 
+def inventory_command() -> None:
+
+    print("Athena Recovery Inventory")
+    print()
+
+    inventory = create_inventory()
+
+    for section, values in inventory.items():
+
+        print(f"{section}:")
+
+        if isinstance(values, dict):
+
+            for key, value in values.items():
+                print(
+                    f"  {key}: {value}"
+                )
+
+        else:
+            print(
+                f"  {values}"
+            )
+
+        print()
+
+
 def main() -> None:
 
     if len(sys.argv) < 2:
@@ -152,6 +179,30 @@ def main() -> None:
             sys.argv[2],
             sys.argv[3],
         )
+
+    elif command == "inventory":
+
+        if "--output" in sys.argv:
+
+            index = sys.argv.index(
+                "--output"
+            )
+
+            if len(sys.argv) > index + 1:
+
+                output = save_inventory(
+                    sys.argv[index + 1]
+                )
+
+                print(
+                    "Inventory saved:"
+                )
+
+                print(output)
+
+                return
+
+        inventory_command()
 
     else:
 

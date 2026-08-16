@@ -13,6 +13,10 @@ from .manifest import (
     create_manifest,
 )
 
+from .inventory import (
+    create_inventory,
+)
+
 from .paths import (
     find_athena_data,
     find_athena_source,
@@ -106,6 +110,31 @@ def _add_user_data(
             )
 
 
+
+def _add_inventory(
+    archive: tarfile.TarFile,
+) -> None:
+    """
+    Add workstation inventory.
+    """
+
+    content = json.dumps(
+        create_inventory(),
+        indent=2,
+    ).encode()
+
+    info = tarfile.TarInfo(
+        "inventory.json"
+    )
+
+    info.size = len(content)
+
+    archive.addfile(
+        info,
+        fileobj=io.BytesIO(content),
+    )
+
+
 def _add_manifest(
     archive: tarfile.TarFile,
 ) -> None:
@@ -148,6 +177,10 @@ def create_backup(
     ) as archive:
 
         _add_manifest(
+            archive
+        )
+
+        _add_inventory(
             archive
         )
 

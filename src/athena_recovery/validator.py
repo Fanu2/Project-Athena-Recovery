@@ -4,6 +4,7 @@ Athena backup validation.
 
 from __future__ import annotations
 
+import json
 import tarfile
 
 
@@ -17,6 +18,7 @@ def validate_backup(
     result = {
         "archive": False,
         "manifest": False,
+        "inventory": False,
         "source": False,
         "user_data": False,
         "excluded_content": False,
@@ -38,6 +40,31 @@ def validate_backup(
                 ) == 1
             )
 
+            result["inventory"] = (
+                names.count(
+                    "inventory.json"
+                ) == 1
+            )
+
+            if result["inventory"]:
+
+                try:
+                    data = archive.extractfile(
+                        "inventory.json"
+                    )
+
+                    if data:
+                        json.load(
+                            data
+                        )
+
+                        result["inventory"] = True
+
+                except Exception:
+
+                    result["inventory"] = False
+
+
             result["source"] = any(
                 name.startswith(
                     "source/"
@@ -52,18 +79,18 @@ def validate_backup(
                 for name in names
             )
 
-            excluded = (
-                ".git/"
-                in names
-                or any(
-                    "/__pycache__/"
-                    in name
-                    for name in names
+
+            excluded = any(
+                (
+                    name.startswith(
+                        ".git/"
+                    )
+                    or "/__pycache__/" in name
+                    or name.endswith(
+                        ".pyc"
+                    )
                 )
-                or any(
-                    name.endswith(".pyc")
-                    for name in names
-                )
+                for name in names
             )
 
             result["excluded_content"] = (
