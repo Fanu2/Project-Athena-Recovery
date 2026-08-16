@@ -2,55 +2,98 @@
 
 ## Athena Recovery Utility
 
-A standalone backup and recovery system for
-Project-Athena.
+A standalone backup and recovery system for Project-Athena.
 
-The purpose of this project is to ensure that an
-Athena offline AI workspace can be safely backed up,
-validated, and restored after data loss, hardware
-failure, or system migration.
+This utility ensures that an Athena offline AI workspace can be safely backed up, validated, and restored after data loss, hardware failure, or system migration.
 
 ---
 
 # Vision
 
-Athena is designed as a personal offline AI workspace.
-
-A recovery system is therefore a core part of the
-architecture.
-
-Principles:
+Athena follows an offline-first philosophy:
 
 - User owns the data
-- Offline-first recovery
-- Portable backups
-- Predictable restore process
-- Explicit backup rules
-- Independent recovery repository
+- Recovery must work offline
+- Backups must be portable
+- Restore must be predictable
+- Backup rules must be explicit
+- Recovery remains independent from Athena
 
 ---
 
 # Architecture
 
-The recovery utility is maintained separately from
-Athena.
+Projects/
+
+├── Project-Athena/
+│ └── Personal Offline AI Workspace
+│
+└── Project-Athena-Recovery/
+└── Backup and Recovery Layer
 
 
 
 The recovery utility does not modify Athena.
-It only reads Athena data and creates recovery
-artifacts.
+It only reads Athena data and creates recovery artifacts.
+
 
 ---
 
-# Current Release
 
-## R1 — Recovery Foundation
+# Recovery Workflow
+
+
+
+Athena Workspace
+|
+v
+Discovery
+|
+v
+Manifest Generation
+|
+v
+Backup Policy
+|
+v
+Compressed Archive
+|
+v
+Validation
+|
+v
+Safe Restore
+|
+v
+Recovery Report
+
+
+
+---
+
+
+# Release Status
+
+
+## R3-Recovery-Freeze
+
 
 Status:
 
 
-Completed:
+
+FROZEN
+
+
+
+---
+
+
+# Completed Capabilities
+
+
+## R1 — Recovery Foundation
+
 
 - Athena source detection
 - Athena data detection
@@ -62,11 +105,157 @@ Completed:
 - Restore testing
 - Regression tests
 
+
+## R2 — CLI Packaging
+
+
+Installed command:
+
+
+
+athena-recovery
+
+
+
+Capabilities:
+
+
+- Python package installation
+- Console command interface
+
+
+## R3 — Workstation Recovery Inventory
+
+
+Completed:
+
+
+- System inventory
+- Python version capture
+- Athena git revision capture
+- Database inventory
+- Ollama model inventory
+- Inventory JSON export
+- Inventory stored inside backup
+- Restore report generation
+
+
 ---
 
-# Recovery Workflow
 
+# Backup Structure
+
+
+
+athena-backup.tar.gz
+
+├── manifest.json
+├── inventory.json
+├── source/
+└── user-data/
+
+
+
+---
+
+
+# Included Content
+
+
+
+src/
+docs/
+engineering/
+scripts/
+tools/
+tests/
+.github/
+benchmarks/
+
+README.md
+pyproject.toml
+
+
+
+User data:
+
+
+
+~/.athena/
+
+
+
+---
+
+
+# Excluded Content
+
+
+Generated or rebuildable files:
+
+
+
+.git/
+build/
+build-dir/
+dist/
+flatpak-venv/
+.pytest_cache/
+reports/
+pycache/
+*.pyc
+.venv/
+venv/
+
+
+
+---
+
+
+# Command Reference
+
+
+## Information
+
+
+```bash
+athena-recovery info
+Create Manifest
+athena-recovery manifest
+Create Backup
+athena-recovery backup ~/Backups/athena-backup.tar.gz
+Validate Backup
+athena-recovery validate ~/Backups/athena-backup.tar.gz
+Restore Backup
+athena-recovery restore \
+~/Backups/athena-backup.tar.gz \
+/tmp/athena-restore-test
+Inventory
+
+Display:
+
+athena-recovery inventory
+
+Save:
+
+athena-recovery inventory --output recovery-inventory.json
+Restore Report
+
+A successful restore creates:
+
+restore-report.json
+
+Containing:
+
+restore status
+archive used
+restore destination
+restored file count
+manifest verification
+inventory verification
+Repository Structure
 Project-Athena-Recovery/
+
 
 ├── README.md
 ├── pyproject.toml
@@ -78,20 +267,43 @@ Project-Athena-Recovery/
 │       ├── restore.py
 │       ├── validator.py
 │       ├── manifest.py
+│       ├── inventory.py
+│       ├── report.py
 │       ├── policy.py
 │       ├── paths.py
 │       ├── system.py
 │       └── cli.py
 │
-├── tests/
-│
-├── docs/
-│
-└── scripts/
+└── tests/
+Testing
 
-Then verify:
+Run:
 
-```bash
-wc -l README.md
-head -30 README.md
-head -30 README.md
+pytest tests -q
+
+Validated workflows:
+
+backup creation
+backup validation
+restore execution
+inventory generation
+Relationship With Athena
+Athena
+ |
+ +-- Workspace Intelligence
+ +-- Retrieval Intelligence
+ +-- Assistant Engine
+ |
+ +-- Recovery System
+
+Project-Athena-Recovery is the protection and restoration layer.
+
+Final Status
+R3-Recovery-Freeze
+
+
+Stable checkpoint.
+
+
+No further development planned unless
+a real recovery requirement appears.
