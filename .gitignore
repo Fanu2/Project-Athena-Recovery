@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 venv/
 athena-manifest.json
+src/*.egg-info/
